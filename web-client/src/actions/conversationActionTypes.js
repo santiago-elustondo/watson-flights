@@ -1,0 +1,4 @@
+export const ADD_MSG = 'ADD_MSG'
+export const SET_ARRIVAL_CITY = 'SET_ARRIVAL_CITY'
+export const UPDATE_SYSTEM = 'UPDATE_SYSTEM'
+export const SET_DEPARTURE_CITY = 'SET_DEPARTURE_CITY'
