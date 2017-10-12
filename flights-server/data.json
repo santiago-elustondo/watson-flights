@@ -1,0 +1,19 @@
+{
+  "flights": [
+    {
+      "id": 1,
+      "departure_city": "Toronto",
+      "arrival_city": "Ottawa"
+    },
+    {
+      "id": 2,
+      "departure_city": "Toronto",
+      "arrival_city": "Saskatoon"
+    },
+    {
+      "id": 3,
+      "departure_city": "Vancouver",
+      "arrival_city": "Ottawa"
+    }
+  ]
+}

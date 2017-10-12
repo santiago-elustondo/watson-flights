@@ -1,0 +1,9 @@
+{
+  "name": "flights-server",
+  "scripts": {
+    "start": "json-server --watch data.json"
+  },
+  "dependencies": {
+    "json-server": "^0.12.0"
+  }
+}
