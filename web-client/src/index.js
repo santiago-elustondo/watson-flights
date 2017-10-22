@@ -23,6 +23,8 @@ const store = createStore(
   applyMiddleware(thunk, sagaMiddleware),
 )
 
+window.s = store
+
 sagaMiddleware.run(mySaga)
 
 // how to make this more functional?

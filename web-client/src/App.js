@@ -8,6 +8,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid';
 import InputBox from './components/InputBox'
 import MessageHistory from './components/MessageHistory'
 import FlightRows from './components/FlightRows'
+import CurrentOpts from './components/CurrentOpts'
 
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
           <h2>watson-flights</h2>
         </div>
         <div className="App-content">
+          <CurrentOpts/>
           <Grid fluid>
             <Row>
               <Col xs={6}>

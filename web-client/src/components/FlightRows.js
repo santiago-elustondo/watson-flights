@@ -24,5 +24,3 @@ const FlightRows = ({ flights = [] }) => (
 export default connect(
   state => ({ flights: state.relevantFlights })
 )(FlightRows)
-
-FlightRows
