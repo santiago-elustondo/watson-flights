@@ -1,8 +1,10 @@
-import {combineReducers} from 'redux';
-import conversationReducer from './conversationReducer';
+import {combineReducers} from 'redux'
+import conversationReducer from './conversationReducer'
+import relevantFlightsReducer from './relevantFlightsReducer'
 
 const RootReducer = combineReducers({
-  conversation: conversationReducer
-});
+  conversation: conversationReducer,
+  relevantFlights: relevantFlightsReducer
+})
 
-export default RootReducer;
+export default RootReducer

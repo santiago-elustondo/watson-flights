@@ -1,5 +1,6 @@
 import SocketIO from 'socket.io-client';
 import { receiveMsg } from '../actions/conversationActions';
+import { updateArrivalCity } from '../actions/flightsActions'
 
 class ConversationService {
 
@@ -8,7 +9,7 @@ class ConversationService {
     this.socket = SocketIO('http://localhost:8080');
     this.socket.on('connect', () => { console.log('socket connected') });
     this.socket.on('disconnect', () => { console.log('socket disconnected') });
-    this.socket.on('msg', msg => store.dispatch(receiveMsg(msg)) );
+    this.socket.on('msg', msg => store.dispatch(receiveMsg(msg)));
   }
 
   sendMsg(text){
