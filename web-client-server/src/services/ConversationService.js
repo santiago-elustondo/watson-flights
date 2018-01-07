@@ -12,8 +12,8 @@ class ConversationService {
     this.socket.on('msg', msg => store.dispatch(receiveMsg(msg)));
   }
 
-  sendMsg(text){
-    return this.socket.emit('msg', { text })
+  sendMsg(msg){
+    return this.socket.emit('msg', msg)
   }
 
 }

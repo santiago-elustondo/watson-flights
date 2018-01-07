@@ -2,7 +2,8 @@ import * as types from '../actions/conversationActionTypes'
 
 const initialState = {
   messageHistory: [],
-  context: {}
+  context: {},
+  nextHandler: null
 }
 
 export default function(state = initialState, action) {
@@ -54,6 +55,11 @@ export default function(state = initialState, action) {
           last_action: undefined
         })
       })
+    case 'SET_CONVERSATION_HANDLER':
+      return _o(state, {
+        handler: action.handler
+      })
+
     default:
       return state;
   }

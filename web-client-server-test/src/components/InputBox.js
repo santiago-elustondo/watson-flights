@@ -4,6 +4,12 @@ import { sendMsg } from '../actions/conversationActions'
 import './InputBox.css';
 
 class InputBox extends Component {
+
+  constructor(){
+    super();
+    this.state = { txt: '' };
+  }
+
   render() {
     const { sendMsg } = this.props
     const handleKeyPress = (key) => {
