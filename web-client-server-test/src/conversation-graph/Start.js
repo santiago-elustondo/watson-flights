@@ -2,7 +2,7 @@ export function Start (m, s, n) {
 
   if (!m.input.text && !s.saidHi) // init message is blank
     return {
-      text: 'hello! where are you looking to fly?',
+      text: 'hello! can i help you?',
       stateUpdate: { saidHi: true },
       nextNode: 'Start'
     }
