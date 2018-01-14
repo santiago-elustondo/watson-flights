@@ -1,88 +1,113 @@
-function _o(object, ...extensions){
-  return Object.assign({}, object, ...extensions.filter(e => !!e))
+import * as A from '../actions/misc-actions'
+import * as F from '../services/FlightsService'
+
+const receiveArrivalCity = ({
+  data: { arrivalCity, departureCity = undefined }
+}) => {
+
+  let txt
+  if (arrivalCity && departureCity)
+    txt = `cool, so you wanna fly from ${departureCity} to ${arrivalCity}.`
+  else if (arrivalCity)
+    txt = `ok, so you wanna fly to ${arrivalCity}.`
+  else
+    txt = `sorry, I didn't get what city you're trying to fly to.`
+
+  return { txt, patch: { arrivalCity } }
+
 }
 
-export function ProvideArrivalCity (m, s, n, f) {
+const askArrivalCity = ({
+  data: { arrivalCity },
+}) => {
 
-  const haveFlag = (flag) => f ? f.find(f => f == flag) : false
-  const grabFirstEntity = (entity) => ( m.entities.find(e => e.entity == entity) || {} ).value
+  let question, nextNode;
+  if (arrivalCity) {
+    question = `did you say you wanted to fly to ${arrivalCity}?`
+    nextNode = `ConfirmArrivalCity`
+  } else {
+    question = `which city are you looking to fly to?`
+    nextNode = `ProvideArrivalCity`
+  }
 
-  const city = haveFlag('USE_EXISTING') ? s.arrivalCity : grabFirstEntity('City')
-  const province = grabFirstEntity('Province')
+  return { question, nextNode }
 
-  const date = grabFirstEntity('sys-date')
-  const time = grabFirstEntity('sys-time')
+}
 
-  if (city) {
+const undoArrivalCity = ({} = {}) => {
 
-    const updateArrivalCity = { arrivalCity: city }
+  const aacFragment = askArrivalCity({ data: {} })
 
-    if (date) {
+  return {
+    statement: `oh, sorry. Maybe I misunderstood.`,
+    patch: { arrivalCity: undefined },
+    question: aacFragment.question,
+    nextNode: aacFragment.nextNode
+  }
 
-      const updateDate = { date }
+}
 
-      if (!s.departureCity)
-        return {
-          text: `so you wanna fly to ${city} on ${date}, where are you departing from?`,
-          stateUpdate: _o(updateArrivalCity, updateDate),
-          nextNode: 'ProvideDepartureCity',
-          backtrack: {
-            node: 'ChangeArrivalCity',
-            flags: [ 'MISUNDERSTOOD', 'CLEAR_DATE'],
-          }
-        }
-      else
-        return {
-          text: `cool, so you wanna fly from ${s.departureCity} to ${city}.`,
-          stateUpdate: _o(updateArrivalCity, updateDate),
-          nextNode: 'stop',
-          backtrack: {
-            node: 'ChangeArrivalCity',
-            flags: [ 'MISUNDERSTOOD', 'CLEAR_DATE'],
-          }
-        }
+const askDepartureCity = ({
+  data: { departureCity }
+}) => {
+
+  let txt;
+  if (departureCity)
+    txt = `did you say you are leaving from ${departureCity}?`
+  else
+    txt = `which city are you departing from?`
+
+  return { txt }
+
+}
+
+export function * ProvideArrivalCity ({ msg, getState, dispatch }) {
+
+  const grabFirstEntity = (entity) => (
+      msg.entities.find(e => e.entity == entity) || {}
+    ).value
+
+  const arrivalCity = grabFirstEntity('City')
+  const departureCity = getState().departureCity
+
+  const racFragment = receiveArrivalCity({
+    data: { arrivalCity, departureCity }
+  })
+
+  if (arrivalCity) {
+
+    yield dispatch(A.updateState(racFragment.patch))
+    yield dispatch(A.say(racFragment.txt))
+
+    if (!departureCity /* || departureCityCertainty < 7 */ ) {
+
+      const adcFragment = askDepartureCity({ data: {} })
+
+      yield dispatch(A.say(adcFragment.txt))
+      yield dispatch(A.say(`[SRY WE DONT HAVE THE NODES]`))
+
+    } else {
+
+      yield dispatch(A.say(`i guess we're done!`))
 
     }
 
-    else {
-
-      if (!s.departureCity)
-        return {
-          text: `so you wanna fly to ${city}, where are you departing from?`,
-          stateUpdate: updateArrivalCity,
-          nextNode: 'ProvideDepartureCity',
-          backtrack: {
-            node: 'ChangeArrivalCity',
-            flags: [ 'MISUNDERSTOOD' ]
-          }
-        }
-      else
-        return {
-          text: `cool, so you wanna fly from ${s.departureCity} to ${city}.`,
-          stateUpdate: updateArrivalCity,
-          nextNode: 'stop',
-          backtrack: {
-            node: 'ChangeArrivalCity',
-            flags: [ 'MISUNDERSTOOD', 'CLEAR_DATE'],
-          }
-        }
-
+    const backtrack = {
+      patch: { arrivalCity: undefined },
+      fragment: undoArrivalCity, // should be serializable. should have a getFragment()`, which feed in getState() so we dont need "data"
     }
+
+    return { nextNode: 'stop', backtrack }
 
   }
 
-  if (!city) {
+  else {
 
-    if (province)
-      return {
-        text: `so you wanna go to ${province}, but what city?`,
-        nextNode: 'provideArrivalCity'
-      }
-    else
-      return {
-        text: `sorry, I didn't get what city you're trying to fly to`,
-        nextNode: 'provideArrivalCity'
-      }
+    const aacFragment = askArrivalCity({ data: {} })
+
+    yield dispatch(A.say(racFragment.txt))
+    yield dispatch(A.say(aacFragment.txt))
+    return { nextNode: 'ProvideArrivalCity' }
 
   }
 

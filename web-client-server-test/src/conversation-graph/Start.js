@@ -1,26 +1,41 @@
-export function Start (m, s, n) {
+import * as A from '../actions/misc-actions'
 
-  if (!m.input.text && !s.saidHi) // init message is blank
-    return {
-      text: 'hello! can i help you?',
-      stateUpdate: { saidHi: true },
-      nextNode: 'Start'
-    }
+//const addArrivalCityHaving
 
+export function * Start ({ msg, getNode, getState, dispatch, getArgs }) {
 
-  if (m.intents.find(i => i.intent == 'info-location-both'))
-    return n('ProvideBothCities')(m, s, n)
+  // utils
+  const grabFirstEntity = (entity) => (
+      msg.entities.find(e => e.entity == entity) || {}
+    ).value
 
-  if (m.intents.find(i => i.intent == 'info-location-arrival'))
-    return n('ProvideArrivalCity')(m, s, n)
+  const s = getState()
 
-  if (m.intents.find(i => i.intent == 'info-location-departure'))
-    return n('ProvideDepartureCity')(m, s, n)
+  if (!msg.input.text && !s.saidHi) { // init message is blank
 
+    yield dispatch(A.say('hello! can i help you?'))
+    yield dispatch(A.updateState({ saidHi: true }))
 
-  return {
-    text: `umm, sorry what?`,
-    nextNode: 'Start'
+    return { nextNode: 'Start' }
+
   }
+
+  if (msg.intents.find(i => i.intent == 'info-location-arrival')) {
+
+    const date = grabFirstEntity('date')
+
+    return getNode('ProvideArrivalCity')(getArgs())
+
+  }
+
+  if (msg.intents.find(i => i.intent == 'info-location-both')) {}
+    // return getNode('ProvideArrivalCity')(m, s, n)
+
+  if (msg.intents.find(i => i.intent == 'info-location-departure')) {}
+    //return getNode('ProvideDepartureCity')(m, s, n)
+
+  yield dispatch(A.say(`umm, sorry what?`))
+
+  return { nextNode: 'Start' }
 
 }

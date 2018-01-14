@@ -1,13 +1,21 @@
 export function ProvideBothCities (m, s, n, f) {
 
+  const haveFlag = (flag) => f ? f.find(f => f == flag) : false
+  const grabFirstEntity = (entity) => ( m.entities.find(e => e.entity == entity) || {} ).value
+
   const places = m.entities.filter(e => e.entity == 'City' || e.entity == 'Province')
 
-  const entityAfterWord = (word) => places.find(p =>
-    m.input.text.slice(0, p.location[0]).trim().split(' ').pop().toLowerCase() == word
-  )
+  const entityAfterWord = (word) => places
+    .find(p =>
+      m.input.text
+        .slice(0, p.location[0])
+        .trim().split(' ')
+        .pop().toLowerCase() == word )
 
   const arrivalPlace = entityAfterWord('to')
   const departurePlace = entityAfterWord('from')
+  const date = grabFirstEntity('sys-date')
+  const time = grabFirstEntity('sys-time')
 
   if ( arrivalPlace
     && departurePlace

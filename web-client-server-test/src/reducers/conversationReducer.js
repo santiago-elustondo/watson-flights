@@ -3,11 +3,18 @@ import * as types from '../actions/conversationActionTypes'
 const initialState = {
   messageHistory: [],
   context: {},
-  nextHandler: null
+  nextHandler: null,
+
+
 }
 
 export default function(state = initialState, action) {
   switch(action.type) {
+
+    // general purpose development reducer
+    case 'UPDATE_STATE':
+      return _o(state, action.patch)
+
     case types.ADD_MSG:
       return _o(state, {
         messageHistory: state.messageHistory.concat(action.msg)

@@ -6,6 +6,8 @@ import { ChangeDepartureCity } from '../conversation-graph/ChangeDepartureCity'
 import { ChangeArrivalCity } from '../conversation-graph/ChangeArrivalCity'
 import { ConfirmArrivalCity } from '../conversation-graph/ConfirmArrivalCity'
 
+import co from 'co'
+
 function _o(object, ...extensions){
   return Object.assign({}, object, ...extensions.filter(e => !!e))
 }

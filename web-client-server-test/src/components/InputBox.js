@@ -10,18 +10,31 @@ class InputBox extends Component {
     this.state = { txt: '' };
   }
 
+  componentDidMount(){
+    this.nameInput.focus();
+  }
+
+  send() {
+    this.props.sendMsg(this.state.txt)
+    this.setState({ txt: '' })
+  }
+
   render() {
-    const { sendMsg } = this.props
+    //const { sendMsg } = this.props
     const handleKeyPress = (key) => {
-      if (key === 'Enter') sendMsg(this.state.txt)
+      if (key === 'Enter') this.send()
     }
     return (
       <div>
         <input
+          ref={(input) => { this.nameInput = input; }}
+          value={this.state.txt}
           onKeyPress={e => handleKeyPress(e.key)}
           onChange={e => this.setState({ txt: e.target.value })}>
         </input>
-        <button onClick={() => sendMsg(this.state.txt)}> send </button>
+        <button onClick={() => this.send()}>
+          send
+        </button>
       </div>
     )
   }
