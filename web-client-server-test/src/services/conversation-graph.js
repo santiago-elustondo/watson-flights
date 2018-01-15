@@ -44,9 +44,7 @@ export function conversationGraph({ start, nodes, fragments }){
     }
   }
 
-  const backtrackInstructionsBaseType = {
-    fragment: x => x, // shouldnt be a function here. see other file for more
-  }
+  const backtrackInstructionsBaseType = [] // array of fragment names
 
   const applyBaseType = (object, baseType) => Object.assign({}, baseType, object)
 

@@ -17,7 +17,7 @@ export function * stop ({ msg, getState, getFragment, dispatch }) {
   if (msg.intents.find(i => i.intent == 'backtrack')) {
     const lastFrame = getState()._conv_.history.slice(-1)[0]
     const bt = lastFrame.backtrack
-    const btFragment = getFragment(bt.fragment)()
+    const btFragment = getFragment(bt[0])()
     yield dispatch(A.updateState(btFragment.patch))
     yield dispatch(A.say(btFragment.statement))
     yield dispatch(A.say(btFragment.question))

@@ -29,7 +29,7 @@ export default function * ConfirmArrivalCity ({ msg, dispatch, getFragment, getN
 
     } else {
 
-      return yield * getNode('Start')(getArgs({ msg: emptyMsg() }))
+      return yield getNode('Start')(getArgs({ msg: emptyMsg() }))
 
     }
 

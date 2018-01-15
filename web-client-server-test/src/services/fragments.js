@@ -1,4 +1,34 @@
 
+// date --------
+
+export const setDate = ({ params }) => {
+
+  const date = params.date
+
+  return {
+    statement: `ok, let's see what we have available on ${date}`,
+    patch: { date },
+    backtrack: {
+      fragments: [ 'undoDate' ]
+    }
+  }
+
+}
+
+export const undoDate = ({ params }) => {
+
+  const date = params.date
+
+  return {
+    statement: `ok, let's see what we have available on ${date}`,
+    question: `when are you looking to fly?`,
+    patch: { date: undefined },
+  }
+
+}
+
+// arrival city --------
+
 export const receiveArrivalCity = ({ params, getState }) => {
 
   const arrivalCity = params ? params.arrivalCity : undefined
@@ -61,6 +91,8 @@ export const undoArrivalCity = ({ getState, getFragment }) => {
   }
 
 }
+
+// departure city --------
 
 export const receiveDepartureCity = ({ params, getState }) => {
 

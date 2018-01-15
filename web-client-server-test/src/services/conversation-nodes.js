@@ -61,10 +61,7 @@ export function graph({ start, nodes }){
         history: conversationState.history.concat([ {
           node: handlerNode,
           supportingNodes,
-          backtrack: {
-            node: backtrack.node,
-            flags: backtrack.flags
-          }
+          backtrack,
         }]),
         backtrack: undefined
       })

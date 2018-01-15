@@ -16,16 +16,13 @@ export default function * ProvideDepartureCity ({ msg, getState, dispatch, getFr
     yield dispatch(A.updateState(rdcFragment.patch))
     yield dispatch(A.say(rdcFragment.statement))
 
-    const backtrack = {
-      patch: { arrivalCity: undefined },
-      fragment: 'undoArrivalCity',
-    }
+    const backtrack = [ 'undoDepartureCity' ]
 
-    const aacFragment = getFragment('checkArrivalCity')()
+    const cacFragment = getFragment('checkArrivalCity')()
 
-    if (aacFragment.question) {
-      yield dispatch(A.say(aacFragment.question))
-      return { backtrack, nextNode: aacFragment.nextNode }
+    if (cacFragment.question) {
+      yield dispatch(A.say(cacFragment.question))
+      return { backtrack, nextNode: cacFragment.nextNode }
     } else {
       yield dispatch(A.say(`k, i guess we're done`))
       return { backtrack, nextNode: 'stop' }

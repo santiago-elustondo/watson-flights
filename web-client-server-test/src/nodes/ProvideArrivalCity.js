@@ -16,10 +16,7 @@ export default function * ProvideArrivalCity ({ msg, getState, dispatch, getFrag
     yield dispatch(A.updateState(racFragment.patch))
     yield dispatch(A.say(racFragment.statement))
 
-    const backtrack = {
-      patch: { arrivalCity: undefined },
-      fragment: 'undoArrivalCity',
-    }
+    const backtrack = [ 'undoArrivalCity' ]
 
     const adcFragment = getFragment('askDepartureCity')()
 
