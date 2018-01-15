@@ -34,13 +34,7 @@ function msgHandledAction({ nodeName, supportingNodes, nextNode, backtrack }){
   }
 }
 
-export function conversationGraph({ start, nodes }){
-
-  const getPromiseNode = (name) => {
-    const node = nodes.find(n => n.name == name)
-    if (!node) console.log(`node "${name}" not found`)
-    return co.wrap(node)
-  }
+export function conversationGraph({ start, nodes, fragments }){
 
   const parsedMsgBaseType = {
     entities: [],
@@ -67,22 +61,46 @@ export function conversationGraph({ start, nodes }){
 
         parsedMsg = applyBaseType(parsedMsg, parsedMsgBaseType)
 
+        const getPromiseNode = (name) => {
+          const node = nodes.find(n => n.name == name)
+          if (!node) console.log(`node "${name}" not found`)
+          return co.wrap(node)
+        }
+
+        const getWrappedFragment = (name) => {
+          const fragment = fragments.find(f => f.name == name)
+          if (!fragment) console.log(`fragment "${name}" not found`)
+          return params => fragment({
+            params,
+            getState,
+            getFragment: getWrappedFragment
+          })
+        }
+
         const supportingNodes = []
         const getAndRecordNode = (name) => {
           supportingNodes.push(name)
           return getPromiseNode(name)
         }
 
+        const supportingFragments = []
+        const getAndRecordFragment = (name) => {
+          supportingFragments.push(name)
+          return getWrappedFragment(name)
+        }
+
         const nodeName = convState().nextNode || start || 'Start'
         const node = getPromiseNode(nodeName)
 
-        const getArgs = () => ({
+        const getArgs = (overrides = {}) => Object.assign({
           msg: parsedMsg,
           flags: [],
           getState,
           dispatch,
+          emptyMsg: () => applyBaseType({}, parsedMsgBaseType),
           getNode: getAndRecordNode,
-        })
+          getFragment: getAndRecordFragment,
+        }, overrides)
 
         return node({ getArgs, ...getArgs() })
           .then(({ nextNode, backtrack }) => {

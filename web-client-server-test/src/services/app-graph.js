@@ -1,22 +1,23 @@
 
 import { conversationGraph } from './conversation-graph'
 
-import { Start } from '../conversation-graph/Start'
-import { ProvideArrivalCity } from '../conversation-graph/ProvideArrivalCity'
-
 import { graph } from './conversation-graph'
 import * as F from './FlightsService'
 
 import * as A from '../actions/misc-actions'
 
+import * as NODES from '../nodes/index'
+
+import * as FRAGMENTS from './fragments'
+
 // node (import)
-export function * stop ({ msg, getState, dispatch }) {
+export function * stop ({ msg, getState, getFragment, dispatch }) {
 
   // this should be a parent class method with hook
   if (msg.intents.find(i => i.intent == 'backtrack')) {
     const lastFrame = getState()._conv_.history.slice(-1)[0]
     const bt = lastFrame.backtrack
-    const btFragment = bt.fragment()
+    const btFragment = getFragment(bt.fragment)()
     yield dispatch(A.updateState(btFragment.patch))
     yield dispatch(A.say(btFragment.statement))
     yield dispatch(A.say(btFragment.question))
@@ -36,9 +37,6 @@ export function * stop ({ msg, getState, dispatch }) {
 
 export const createWFConversationGraph = conversationGraph({
 //  start: 'stop',
-  nodes: [
-    stop,
-    Start,
-    ProvideArrivalCity
-  ]
+  nodes: [ stop, ...Object.values(NODES) ],
+  fragments: [ ...Object.values(FRAGMENTS) ],
 });

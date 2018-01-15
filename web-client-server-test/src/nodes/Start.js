@@ -1,8 +1,6 @@
 import * as A from '../actions/misc-actions'
 
-//const addArrivalCityHaving
-
-export function * Start ({ msg, getNode, getState, dispatch, getArgs }) {
+export default function * Start ({ msg, getNode, getState, dispatch, getArgs }) {
 
   // utils
   const grabFirstEntity = (entity) => (
